@@ -1,5 +1,5 @@
 @_spi(package) import NavigationTransition
-@_implementationOnly import RuntimeAssociation
+import RuntimeAssociation
 @_implementationOnly import RuntimeSwizzling
 import UIKit
 
@@ -117,19 +117,22 @@ extension RandomAccessCollection where Index == Int {
     }
 }
 
-extension UINavigationController {
-    private var defaultDelegate: UINavigationControllerDelegate! {
-        get { self[] }
-        set { self[] = newValue }
-    }
+extension UINavigationController: RuntimePropertyAssociation {
+    public final class RuntimeProperties {
+        @retainNonatomic var defaultDelegate: UINavigationControllerDelegate
 
-    var customDelegate: NavigationTransitionDelegate! {
-        get { self[] }
-        set {
-            self[] = newValue
-            delegate = newValue
+        @retainNonatomic var customDelegate: NavigationTransitionDelegate {
+            willSet { controller?.delegate = newValue }
+        }
+
+        weak var controller: UINavigationController?
+
+        init(controller: UINavigationController?) {
+            self.controller = controller
         }
     }
+
+    public var runtimeProperties: RuntimeProperties { .init(controller: self) }
 
     public func setNavigationTransition(
         _ transition: AnyNavigationTransition,
@@ -137,11 +140,11 @@ extension UINavigationController {
     ) {
         backDeploy96852321()
 
-        if defaultDelegate == nil {
-            defaultDelegate = delegate
+        if self.$defaultDelegate == nil {
+            self.$defaultDelegate = delegate
         }
 
-        customDelegate = NavigationTransitionDelegate(transition: transition, baseDelegate: defaultDelegate)
+        self.$customDelegate = NavigationTransitionDelegate(transition: transition, baseDelegate: self.$defaultDelegate)
 
         #if !os(tvOS)
         if defaultPanRecognizer == nil {

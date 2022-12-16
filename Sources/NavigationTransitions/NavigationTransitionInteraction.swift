@@ -2,7 +2,7 @@ import UIKit
 
 extension UINavigationController {
     @objc func handleInteraction(_ gestureRecognizer: UIPanGestureRecognizer) {
-        guard let delegate = customDelegate else {
+        guard let delegate = self.$customDelegate else {
             return
         }
         guard let gestureRecognizerView = gestureRecognizer.view else {
