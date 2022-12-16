@@ -118,6 +118,11 @@ extension RandomAccessCollection where Index == Int {
 }
 
 extension UINavigationController: RuntimePropertyAssociation {
+    // hypothetical swift macro syntax
+//    #runtimeProperty(.retain(.nonatomic), customDelegate, UINavigationController!) { newValue in
+//        delegate = newValue
+//    }
+
     public final class RuntimeProperties {
         @retainNonatomic var defaultDelegate: UINavigationControllerDelegate
 
@@ -129,6 +134,7 @@ extension UINavigationController: RuntimePropertyAssociation {
 
         init(controller: UINavigationController?) {
             self.controller = controller
+            self._defaultDelegate
         }
     }
 
