@@ -123,6 +123,13 @@ extension UINavigationController: RuntimePropertyAssociation {
 //        delegate = newValue
 //    }
 
+//    #runtimeProperty(.retain(.nonatomic))
+//    var customDelegate: UINavigationController! {
+//        willSet {
+//
+//        }
+//    }
+
     public final class RuntimeProperties {
         @retainNonatomic var defaultDelegate: UINavigationControllerDelegate
 
