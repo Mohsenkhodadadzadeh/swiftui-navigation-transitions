@@ -1,29 +1,31 @@
 import ObjectiveC
 
+/// Policies related to associative references.
 public enum RuntimeAssociationPolicy {
 	public enum Atomicity {
 		case atomic
 		case nonatomic
 	}
 
+	/// Specifies an unsafe unretained reference to the associated object.
 	case assign
+	/// Specifies that the associated object is copied.
 	case copy(Atomicity)
+	/// Specifies a strong reference to the associated object.
 	case retain(Atomicity)
-}
 
-extension objc_AssociationPolicy {
-	init(_ policy: RuntimeAssociationPolicy) {
-		switch policy {
+	var rawValue: objc_AssociationPolicy {
+		switch self {
 		case .assign:
-			self = .OBJC_ASSOCIATION_ASSIGN
+			return .OBJC_ASSOCIATION_ASSIGN
 		case .copy(.atomic):
-			self = .OBJC_ASSOCIATION_COPY
+			return .OBJC_ASSOCIATION_COPY
 		case .copy(.nonatomic):
-			self = .OBJC_ASSOCIATION_COPY_NONATOMIC
+			return .OBJC_ASSOCIATION_COPY_NONATOMIC
 		case .retain(.atomic):
-			self = .OBJC_ASSOCIATION_RETAIN
+			return .OBJC_ASSOCIATION_RETAIN
 		case .retain(.nonatomic):
-			self = .OBJC_ASSOCIATION_RETAIN_NONATOMIC
+			return .OBJC_ASSOCIATION_RETAIN_NONATOMIC
 		}
 	}
 }

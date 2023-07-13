@@ -12,7 +12,7 @@ extension RuntimeAssociation {
 		}
 		set {
 			let key = unsafeBitCast(Selector(key), to: UnsafeRawPointer.self)
-			objc_setAssociatedObject(self, key, newValue, .init(policy))
+			objc_setAssociatedObject(self, key, newValue, policy.rawValue)
 		}
 	}
 }
