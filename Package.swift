@@ -70,7 +70,11 @@ package.targets += [
 	.testTarget(name: "RuntimeAssociationTests", dependencies: [
 		"RuntimeAssociation",
 	]),
+	
 	.target(name: "RuntimeSwizzling"),
+	.testTarget(name: "RuntimeSwizzlingTests", dependencies: [
+		"RuntimeSwizzling",
+	]),
 
 	.target(name: "TestUtils", dependencies: [
 		CustomDump,
