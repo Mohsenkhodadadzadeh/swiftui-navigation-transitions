@@ -13,6 +13,11 @@ func _swizzleViewDidAppear(
 	let method: Method? = class_getInstanceMethod(class_, selector)
 	let newImplementation: IMP = imp_implementationWithBlock(unsafeBitCast(block, to: AnyObject.self))
 
+//	guard strcmp(<#T##__s1: UnsafePointer<CChar>!##UnsafePointer<CChar>!#>, <#T##__s2: UnsafePointer<CChar>!##UnsafePointer<CChar>!#>) == 0 else {
+//		print("signatures don't match:")
+//		return
+//	}
+
 	if let method = method {
 		let oldImplementation: IMP = method_getImplementation(method)
 		method_setImplementation(method, newImplementation)
