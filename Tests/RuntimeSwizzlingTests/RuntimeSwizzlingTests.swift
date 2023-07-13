@@ -6,7 +6,10 @@ struct Swizzling {
 	typealias ViewDidAppearFunction = @convention(c) (UIViewController, Selector, Bool) -> Void
 	typealias ViewDidAppearBlock = @convention(block) (UIViewController, Bool) -> Void
 
-	static private func swizzleViewDidAppear(_ class_: AnyClass, to block: @escaping ViewDidAppearBlock) -> IMP? {
+	static private func swizzleViewDidAppear(
+		_ class_: AnyClass,
+		to block: @escaping ViewDidAppearBlock
+	) -> IMP? {
 
 		let selector = #selector(UIViewController.viewDidAppear(_:))
 		let method: Method? = class_getInstanceMethod(class_, selector)
@@ -28,7 +31,10 @@ struct Swizzling {
 //		method_setImplementation(method, originalImplementation)
 //	}
 
-	static func swizzleViewDidAppear(viewController: UIViewController, to block: @escaping (UIViewController) -> Void) {
+	static func swizzleViewDidAppear(
+		viewController: UIViewController,
+		to block: @escaping (UIViewController, Bool) -> Void
+	) {
 		var implementation: IMP?
 		let class_ = type(of: viewController)
 		let swizzledBlock: ViewDidAppearBlock = { calledViewController, animated in
@@ -37,8 +43,8 @@ struct Swizzling {
 				let viewDidAppear: ViewDidAppearFunction = unsafeBitCast(implementation, to: ViewDidAppearFunction.self)
 				viewDidAppear(calledViewController, selector, animated)
 			}
-			if viewController == calledViewController {
-				block(viewController)
+			if viewController === calledViewController {
+				block(viewController, animated)
 //				removeViewDidAppearSwizzle(class_, originalImplementation: implementation)
 			}
 		}
@@ -50,17 +56,36 @@ import XCTest
 
 final class RuntimeSwizzlingTests: XCTestCase {
 	func test() {
-		final class SUT: UIViewController {}
+
+		final class SUT: UIViewController {
+			private unowned var expectation: XCTestExpectation
+
+			init(expectation: XCTestExpectation) {
+				self.expectation = expectation
+				super.init(nibName: nil, bundle: nil)
+			}
+
+			@available(*, unavailable)
+			required init?(coder: NSCoder) {
+				fatalError("init(coder:) has not been implemented")
+			}
+			
+			override dynamic func viewDidAppear(_ animated: Bool) {
+				super.viewDidAppear(animated)
+				expectation.fulfill()
+			}
+		}
 
 		let expectation = XCTestExpectation()
-		expectation.expectedFulfillmentCount = 1
+		expectation.expectedFulfillmentCount = 2
 
-		let sut = SUT()
-		Swizzling.swizzleViewDidAppear(viewController: sut) { `self` in
+		let sut = SUT(expectation: expectation)
+		Swizzling.swizzleViewDidAppear(viewController: sut) { `self`, animated in
+			XCTAssertTrue(animated)
 			expectation.fulfill()
 		}
 		sut.viewDidAppear(true)
 
-		wait(for: [expectation])
+		wait(for: [expectation], timeout: 0.5)
 	}
 }
