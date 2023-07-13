@@ -1,4 +1,4 @@
-import ObjectiveC
+import ObjectiveC.runtime
 
 /// Policies related to associative references.
 public enum RuntimeAssociationPolicy {

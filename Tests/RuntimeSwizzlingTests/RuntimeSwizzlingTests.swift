@@ -1,4 +1,4 @@
-import ObjectiveC
+import ObjectiveC.runtime
 import UIKit
 
 struct Swizzling {

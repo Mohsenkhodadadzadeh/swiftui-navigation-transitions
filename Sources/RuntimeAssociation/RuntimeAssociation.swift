@@ -1,4 +1,4 @@
-import ObjectiveC
+import ObjectiveC.runtime
 
 public protocol RuntimeAssociation: AnyObject {
 	subscript<T>(forKey key: String, policy: RuntimeAssociationPolicy) -> T? { get set }
