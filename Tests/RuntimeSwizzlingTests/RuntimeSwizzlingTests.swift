@@ -76,16 +76,18 @@ final class RuntimeSwizzlingTests: XCTestCase {
 			}
 		}
 
-		let expectation = XCTestExpectation()
-		expectation.expectedFulfillmentCount = 2
+		let expectation1 = XCTestExpectation()
+		expectation1.expectedFulfillmentCount = 1
+		let expectation2 = XCTestExpectation()
+		expectation2.expectedFulfillmentCount = 1
 
-		let sut = SUT(expectation: expectation)
+		let sut = SUT(expectation: expectation1)
 		Swizzling.swizzleViewDidAppear(viewController: sut) { `self`, animated in
 			XCTAssertTrue(animated)
-			expectation.fulfill()
+			expectation2.fulfill()
 		}
 		sut.viewDidAppear(true)
 
-		wait(for: [expectation], timeout: 0.5)
+		wait(for: [expectation1, expectation2], timeout: 0.5, enforceOrder: true)
 	}
 }
