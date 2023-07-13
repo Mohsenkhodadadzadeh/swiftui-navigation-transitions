@@ -67,6 +67,9 @@ package.targets += [
 	]),
 
 	.target(name: "RuntimeAssociation"),
+	.testTarget(name: "RuntimeAssociationTests", dependencies: [
+		"RuntimeAssociation",
+	]),
 	.target(name: "RuntimeSwizzling"),
 
 	.target(name: "TestUtils", dependencies: [
