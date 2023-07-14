@@ -64,6 +64,7 @@
 				D553583D290E97C5009E5D72 /* Frameworks */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 1;
 		};
 		D553581C290E9691009E5D72 /* Products */ = {
 			isa = PBXGroup;
